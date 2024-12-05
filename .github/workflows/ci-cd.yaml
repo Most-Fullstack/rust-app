@@ -31,7 +31,7 @@ jobs:
       run: docker build -t rust-demo .
     - name: Tag Docker image
       # run: docker tag rust-demo ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
-      run: docker tag rust-demo ghcr.io/mostfullstack/rust-demo:latest
+      run: docker tag rust-demo mostfullstack/rust-demo:latest
     - name: Push Docker image
     # run: docker push ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
-      run: docker push ghcr.io/mostfullstack/rust-demo:latest
+      run: docker push mostfullstack/rust-demo:latest
