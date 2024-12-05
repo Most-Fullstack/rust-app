@@ -7,7 +7,7 @@ async fn greet() -> impl Responder {
 }
 
 fn health_check() {
-    println!("rust-app Started");
+    println!("rust-demo started");
 }
 
 fn logging(port: &str, endpoint: &str, mode: &str) {
