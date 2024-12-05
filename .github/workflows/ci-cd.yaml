@@ -25,11 +25,11 @@ jobs:
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --release
-    - name: Build Docker image
-      run: docker build -t rust-demo .
     - name: Log in to GitHub Container Registry
       # run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       run: docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build Docker image
+      run: docker build -t rust-demo .
     - name: Tag Docker image
       run: docker tag rust-app ghcr.io/${{ secrets.DOCKER_USERNAME }}/rust-app:latest
     - name: Push Docker image
