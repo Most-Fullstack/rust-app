@@ -38,3 +38,14 @@ jobs:
     - name: Push Docker image
     # run: docker push ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
       run: docker push mostfullstack/rust-demo:latest
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./rust-demo
