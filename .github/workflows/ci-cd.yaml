@@ -30,6 +30,10 @@ jobs:
     - name: Build Docker image
       run: docker build -t rust-demo .
     - name: Tag Docker image
-      run: docker tag rust-demo ghcr.io/${{ github.repository_owner }}/rust-demo:latest
+      run: |
+        REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' | sed 's/-//g')
+        docker tag rust-demo ghcr.io/$REPO_OWNER/rust-demo:latest
     - name: Push Docker image
-      run: docker push ghcr.io/${{ github.repository_owner }}/rust-demo:latest
+      run: |
+        REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' | sed 's/-//g')
+        docker push ghcr.io/$REPO_OWNER/rust-demo:latest
