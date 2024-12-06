@@ -63,7 +63,7 @@ jobs:
         publish_dir: ./deploy
     
   trigger:
-    needs: build
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       # Trigger another repository action
