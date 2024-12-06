@@ -2,9 +2,9 @@ name: rust-demo
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,66 +13,69 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Run tests
-      run: cargo test --verbose
-    - name: Run clippy
-      run: cargo clippy -- -D warnings
-  
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: cargo test --verbose
+      - name: Run clippy
+        run: cargo clippy -- -D warnings
 
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --release
-    - name: Log in to GitHub Container Registry
-      # run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-    - name: Build Docker image
-      run: docker build -t rust-demo .
-    - name: Tag Docker image
-      # run: docker tag rust-demo ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
-      run: docker tag rust-demo mostfullstack/rust-demo:latest
-    - name: Push Docker image
-    # run: docker push ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
-      run: docker push mostfullstack/rust-demo:latest
-  
+      - uses: actions/checkout@v4
+      - name: Build
+        run: cargo build --release
+      - name: Log in to GitHub Container Registry
+        # run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build Docker image
+        run: docker build -t rust-demo .
+      - name: Tag Docker image
+        # run: docker tag rust-demo ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
+        run: docker tag rust-demo mostfullstack/rust-demo:latest
+      - name: Push Docker image
+        # run: docker push ghcr.io/${{ vars.REPO_USERNAME }}/rust-demo:latest
+        run: docker push mostfullstack/rust-demo:latest
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
-    # Build again (if static files were not built during 'build' job)
-    - name: Build static files for GitHub Pages
-      run: cargo build --release # Adjust this command for your actual static build process
-      
-    # Ensure the deployment directory has the correct content
-    - name: Prepare static files
-      run: |
-        mkdir -p ./deploy
-        cp -r ./target/release/* ./deploy
-    
-    # Deploy to the gh-pages branch
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.TOKEN }}
-        publish_dir: ./deploy
-    
+      - uses: actions/checkout@v4
+
+      # Build again (if static files were not built during 'build' job)
+      - name: Build static files for GitHub Pages
+        run: cargo build --release # Adjust this command for your actual static build process
+
+      # Ensure the deployment directory has the correct content
+      - name: Prepare static files
+        run: |
+          mkdir -p ./deploy
+          cp -r ./target/release/* ./deploy
+
+      # Deploy to the gh-pages branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          publish_dir: ./deploy
+
   trigger:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
       # Trigger another repository action
-    - name: Trigger Kubernetes Deployment Workflow
-      run: |
-        curl -X POST \
-          -H "Accept: application/vnd.github.v3+json" \
-          -H "Authorization: token ${{ secrets.TOKEN }}" \
-          https://api.github.com/repos/Most-Fullstack/k8s-non-prod-deployment/actions/workflows/ci-cd.yaml/dispatches \
-          -d '{"ref":"main"}'
-
-      
+      - name: Trigger Kubernetes Deployment Workflow
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
+          https://api.github.com/repos/target-owner/target-repo/actions/workflows/k8s-non-prod-config.yml/dispatches \
+          -d '{
+            "ref": "main",
+            "inputs": {
+              "environment": "staging",
+              "tag": "'${{ github.ref_name }}'"
+            }
+          }'
