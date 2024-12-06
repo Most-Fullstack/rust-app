@@ -75,7 +75,7 @@ jobs:
           -d '{
             "ref": "main",
             "inputs": {
-              "environment": "staging",
-              "tag": "'${{ github.commit.id}}'"
+              "environment": "uat",
+              "tag": "'${{ github.sha }}'"
             }
           }'
