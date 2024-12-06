@@ -3,7 +3,7 @@ use dotenv::dotenv;
 use std::env;
 
 async fn greet() -> impl Responder {
-    "Hello, world 0.1.1!"
+    "Hello, world 0.4.0!"
 }
 
 fn health_check() {
