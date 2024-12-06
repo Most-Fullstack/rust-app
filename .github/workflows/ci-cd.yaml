@@ -63,6 +63,7 @@ jobs:
         publish_dir: ./deploy
     
   trigger:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       # Trigger another repository action
@@ -71,7 +72,7 @@ jobs:
         curl -X POST \
           -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.TOKEN }}" \
-          https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yml/dispatches \
+          https://api.github.com/repos/Most-Fullstack/k8s-non-prod-deployment/actions/workflows/ci-cd.yaml/dispatches \
           -d '{"ref":"main"}'
 
       
