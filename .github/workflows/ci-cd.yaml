@@ -62,6 +62,7 @@ jobs:
           publish_dir: ./deploy
 
   trigger:
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       # Trigger another repository action
@@ -75,6 +76,6 @@ jobs:
             "ref": "main",
             "inputs": {
               "environment": "staging",
-              "tag": "'${{ github.ref_name }}'"
+              "tag": "'${{ github.commit.id}}'"
             }
           }'
