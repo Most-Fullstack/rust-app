@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rust-app
+  name: rust-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rust-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rust-app
+    spec:
+      containers:
+        - image: mostfullstack/rust-app:0.3.2
+          name: rust-app
+          ports:
+            - containerPort: 8080
+      serviceAccountName: rust-app
+      imagePullSecrets:
+        - name: docker-secret
+status: {}

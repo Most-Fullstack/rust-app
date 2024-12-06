@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: rust-app
+  name: rust-app
+spec:
+  containers:
+  - image: nginx
+    name: rust-app
+    resources: {}
+    volumeMounts:
+    - mountPath: /app
+      name: rust-app
+      subPath: rust-app
+  volumes:
+  - name: rust-app
+    persistentVolumeClaim:
+      claimName: rust-app
+
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
