@@ -10,6 +10,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      # Trigger another repository action
+      - name: Trigger Kubernetes Deployment Workflow
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
+          https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yaml/dispatches \
+          -d '{
+            "ref": "main",
+            "inputs": {
+              "environment": "staging",
+              "tag": "'${{ github.ref_name }}'"
+            }
+          }'
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -61,21 +79,21 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           publish_dir: ./deploy
 
-  trigger:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      # Trigger another repository action
-      - name: Trigger Kubernetes Deployment Workflow
-        run: |
-          curl -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
-          https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yml/dispatches \
-          -d '{
-            "ref": "main",
-            "inputs": {
-              "environment": "staging",
-              "tag": "'${{ github.ref_name }}'"
-            }
-          }'
+  # trigger:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     # Trigger another repository action
+  #     - name: Trigger Kubernetes Deployment Workflow
+  #       run: |
+  #         curl -X POST \
+  #         -H "Accept: application/vnd.github+json" \
+  #         -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
+  #         https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yaml/dispatches \
+  #         -d '{
+  #           "ref": "main",
+  #           "inputs": {
+  #             "environment": "staging",
+  #             "tag": "'${{ github.ref_name }}'"
+  #           }
+  #         }'
