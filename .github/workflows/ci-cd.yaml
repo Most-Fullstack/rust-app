@@ -71,7 +71,7 @@ jobs:
           curl -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
-          https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yaml/dispatches \
+          https://api.github.com/repos/Most-Fullstack/rust-app/actions/workflows/ci-cd.yml/dispatches \
           -d '{
             "ref": "main",
             "inputs": {
